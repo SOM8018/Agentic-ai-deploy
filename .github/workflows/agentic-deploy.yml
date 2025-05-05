@@ -1,0 +1,32 @@
+name: Agentic Deploy Pipeline
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Analyze Changes with Agent
+        run: python agent_analyze.py
+        id: agent_decision
+
+      - name: Conditional Test Run
+        if: steps.agent_decision.outputs.run_tests == 'true'
+        run: |
+          echo "Running tests suggested by the agent..."
+          pytest ${TESTS_TO_RUN}
+
+      - name: Deploy App
+        run: bash deploy.sh
+
+      - name: Post-Deploy Agent Check
+        run: python agent_post_deploy_check.py
