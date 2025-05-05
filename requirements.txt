@@ -1,0 +1,9 @@
+openai>=1.12.0
+requests>=2.31.0
+pytest>=7.4.0
+python-dotenv>=1.0.0
+loguru>=0.7.2           # For better logging
+tqdm>=4.66.0            # Progress bars for long operations
+pydantic>=2.5.0         # Data validation if using structured responses
+llama-cpp-python>=0.2.24  # For running LLaMA models locally
+langchain>=0.1.14         # For chaining agents/tools
