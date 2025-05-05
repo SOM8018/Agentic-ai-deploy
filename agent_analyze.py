@@ -1,15 +1,22 @@
-import openai
-import subprocess
 import os
+import subprocess
+from dotenv import load_dotenv
+import openai
 
-# Set your OpenAI API key
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# Load .env file
+load_dotenv()
+
+# Now read API key from env
+api_key = os.getenv("OPENAI_API_KEY")
+
+if not api_key:
+    raise ValueError("OPENAI_API_KEY not found in environment.")
+
+# Pass the key to the client
+client = openai.OpenAI(api_key=api_key)
 
 # Get git diff
 git_diff = subprocess.getoutput("git diff HEAD^ HEAD")
-
-# Call OpenAI chat model using the new API
-client = openai.OpenAI()
 
 response = client.chat.completions.create(
     model="gpt-4",
@@ -22,6 +29,6 @@ response = client.chat.completions.create(
 decision = response.choices[0].message.content
 print("Agent Decision:\n", decision)
 
-# Save a mock test file list
+# Save output
 with open("tests_to_run.txt", "w") as f:
     f.write("test_user_auth.py test_api_rate_limit.py")
